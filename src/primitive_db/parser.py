@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import shlex
-from typing import Dict, List, Tuple, Any
+from typing import Any, Dict, List, Tuple
 
 
 def split_command(line: str) -> List[str]:
@@ -72,7 +72,8 @@ def parse_values(value_token: str) -> List[Any]:
 
 def _parse_value_token(tok: str):
     t = tok.strip()
-    if (t.startswith('"') and t.endswith('"')) or (t.startswith("'") and t.endswith("'")):
+    if (t.startswith('"') and t.endswith('"')) \
+        or (t.startswith("'") and t.endswith("'")):
         return t[1:-1]
     if t.lower() in ("true", "false"):
         return t.lower() == "true"
