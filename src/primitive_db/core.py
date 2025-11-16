@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-from typing import List, Dict, Any
+from typing import Any, List
+
 from .constants import VALID_TYPES
-from .decorators import handle_db_errors, log_time, confirm_action, create_cacher
-from .utils import save_metadata, load_metadata, load_table_data, save_table_data
+from .decorators import confirm_action, create_cacher, handle_db_errors, log_time
+from .utils import load_table_data, save_table_data
 
 _cache = create_cacher()
 
@@ -88,7 +89,8 @@ def select(metadata: dict, table_name: str, where_clause: dict = None) -> List[d
 
 
 @handle_db_errors
-def update(metadata: dict, table_name: str, set_clause: dict, where_clause: dict) -> List[dict]:
+def update(metadata: dict, table_name: str, \
+    set_clause: dict, where_clause: dict) -> List[dict]:
     if table_name not in metadata:
         raise KeyError(table_name)
     cols = dict(metadata[table_name]["columns"])

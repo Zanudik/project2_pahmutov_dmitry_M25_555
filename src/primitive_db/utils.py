@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import json
 import os
-from typing import Any
-from .constants import META_FILE, DATA_DIR
+
+from .constants import DATA_DIR, META_FILE
 
 
 def ensure_data_dir():

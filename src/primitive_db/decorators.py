@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import time
 from functools import wraps
-from typing import Callable, Any
+from typing import Any, Callable
 
 
 def handle_db_errors(func: Callable) -> Callable:
@@ -17,6 +17,7 @@ def handle_db_errors(func: Callable) -> Callable:
             print(f"Ошибка валидации: {e}")
         except Exception as e:
             print(f"Произошла непредвиденная ошибка: {e}")
+        return None  
     return wrapper
 
 
@@ -24,7 +25,8 @@ def confirm_action(action_name: str):
     def deco(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
-            ans = input(f'Вы уверены, что хотите выполнить "{action_name}"? [y/n]: ').strip().lower()
+            ans = input(f'Вы уверены, что хотите выполнить \
+                "{action_name}"? [y/n]: ').strip().lower()
             if ans != "y":
                 print("Операция отменена.")
                 return None

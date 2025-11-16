@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
-import shlex
 from prettytable import PrettyTable
-from .utils import load_metadata, save_metadata, load_table_data
-from .parser import split_command, parse_columns, parse_where, parse_set, parse_values
-from .core import create_table, drop_table, list_tables, insert, select, update, delete, info
+
 from .constants import META_FILE
+from .core import (
+    create_table,
+    delete,
+    drop_table,
+    info,
+    insert,
+    list_tables,
+    select,
+    update,
+)
+from .parser import parse_columns, parse_set, parse_values, parse_where, split_command
+from .utils import load_metadata, save_metadata
 
 
 def print_help():
@@ -76,9 +85,11 @@ def run():
                     print("Некорректное значение.")
                     continue
                 table_name = tokens[1]
-                metadata = drop_table(metadata, table_name)
-                save_metadata(META_FILE, metadata)
-                print(f'Таблица "{table_name}" успешно удалена.')
+                res = drop_table(metadata, table_name)
+                if res is not None:  
+                    metadata = res
+                    save_metadata(META_FILE, metadata)
+                    print(f'Таблица "{table_name}" успешно удалена.')
                 continue
 
             if cmd == "insert" and len(tokens) >= 4 and tokens[1].lower() == "into":
@@ -122,8 +133,9 @@ def run():
                     continue
                 idx = [i for i, t in enumerate(tokens) if t.lower() == "where"][0]
                 where_clause = parse_where(tokens[idx + 1:])
-                delete(metadata, table_name, where_clause)
-                print("Удаление выполнено.")
+                res = delete(metadata, table_name, where_clause)
+                if res is not None:
+                    print("Удаление выполнено.")
                 continue
 
             if cmd == "info" and len(tokens) == 2:
