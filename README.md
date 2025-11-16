@@ -71,4 +71,4 @@ y
 ```
 
 ## Демонстрация ввода комманд
-[![Asciinema demo](https://asciinema.org/connect/14fdb9c7-1ca0-4aba-8894-89618494cfb6.svg)](https://asciinema.org/connect/14fdb9c7-1ca0-4aba-8894-89618494cfb6X)
+[![Asciinema demo](https://asciinema.org/a/WCJtqkpal2jvxYue0KS73dAw5.svg)](https://asciinema.org/a/WCJtqkpal2jvxYue0KS73dAw5)
