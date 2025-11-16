@@ -63,13 +63,22 @@ def run():
                 if len(tokens) < 3:
                     print("Некорректное значение: недостаточно аргументов.")
                     continue
+
                 table_name = tokens[1]
                 cols = parse_columns(tokens[2:])
-                metadata = create_table(metadata, table_name, cols)
-                save_metadata(META_FILE, metadata)
-                print(f'Таблица "{table_name}" успешно создана со столбцами: ' +
-                      ", ".join([f"{n}:{t}" for n, t in metadata[table_name]["columns"]]))
+
+                if table_name in metadata:
+                    print(f'Таблица "{table_name}" уже существует.')
+                    continue
+
+                new_metadata = create_table(metadata, table_name, cols)
+                if new_metadata is not None: 
+                    metadata = new_metadata
+                    save_metadata(META_FILE, metadata)
+                    print(f'Таблица "{table_name}" успешно создана со столбцами: ' +
+                        ", ".join([f"{n}:{t}" for n, t in metadata[table_name]["columns"]]))
                 continue
+
 
             if cmd == "list_tables":
                 names = list_tables(metadata)
@@ -99,7 +108,6 @@ def run():
                 insert(metadata, table_name, values)
                 print(f"Запись успешно добавлена в таблицу \"{table_name}\".")
                 continue
-
 
             if cmd == "select" and len(tokens) >= 3 and tokens[1].lower() == "from":
                 table_name = tokens[2]

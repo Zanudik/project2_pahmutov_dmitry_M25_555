@@ -25,8 +25,7 @@ def confirm_action(action_name: str):
     def deco(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
-            ans = input(f'Вы уверены, что хотите выполнить \
-                "{action_name}"? [y/n]: ').strip().lower()
+            ans = input(f'Вы уверены, что хотите выполнить "{action_name}"? [y/n]: ').strip().lower()
             if ans != "y":
                 print("Операция отменена.")
                 return None
