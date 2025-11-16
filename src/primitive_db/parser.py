@@ -4,13 +4,30 @@ from typing import Any, Dict, List, Tuple
 
 
 def split_command(line: str) -> List[str]:
+    """
+    Разбивает строку команды на токены с учётом кавычек.
+
+    Args:
+        line (str): строка команды, введённая пользователем
+
+    Returns:
+        List[str]: список токенов команды
+    """
     return shlex.split(line)
 
 
 def parse_columns(columns: List[str]) -> List[Tuple[str, str]]:
     """
-    Вход: ['name:str', 'age:int']
-    Выход: [('name','str'), ('age','int')]
+    Преобразует список строк вида 'name:type' в список кортежей (name, type).
+
+    Args:
+        columns (List[str]): список строк с определением столбцов
+
+    Returns:
+        List[Tuple[str, str]]: список кортежей (имя_столбца, тип_данных)
+
+    Raises:
+        ValueError: если столбец задан некорректно (без ':')
     """
     result = []
     for col in columns:
@@ -22,6 +39,18 @@ def parse_columns(columns: List[str]) -> List[Tuple[str, str]]:
 
 
 def parse_where(expr_tokens: List[str]) -> Dict[str, Any]:
+    """
+    Парсит выражение WHERE вида <column> = <value>.
+
+    Args:
+        expr_tokens (List[str]): токены выражения WHERE
+
+    Returns:
+        Dict[str, Any]: словарь {column: value}
+
+    Raises:
+        ValueError: если выражение некорректное
+    """
     if len(expr_tokens) < 3 or expr_tokens[1] != "=":
         raise ValueError("Некорректный where. Ожидается: <col> = <value>")
     key = expr_tokens[0]
@@ -30,6 +59,18 @@ def parse_where(expr_tokens: List[str]) -> Dict[str, Any]:
 
 
 def parse_set(expr_tokens: List[str]) -> Dict[str, Any]:
+    """
+    Парсит выражение SET для команды UPDATE.
+
+    Args:
+        expr_tokens (List[str]): токены выражения SET
+
+    Returns:
+        Dict[str, Any]: словарь {column: value} для обновления
+
+    Raises:
+        ValueError: если выражение некорректное
+    """
     joined = " ".join(expr_tokens)
     parts = [p.strip() for p in joined.split(",")]
     res = {}
@@ -42,6 +83,15 @@ def parse_set(expr_tokens: List[str]) -> Dict[str, Any]:
 
 
 def parse_values(value_token: str) -> List[Any]:
+    """
+    Парсит строку значений вида ("Alice", 30, true) в список Python-объектов.
+
+    Args:
+        value_token (str): строка значений
+
+    Returns:
+        List[Any]: список значений (str, int, bool)
+    """
     s = value_token.strip()
     if s.startswith("(") and s.endswith(")"):
         s = s[1:-1]
@@ -71,6 +121,15 @@ def parse_values(value_token: str) -> List[Any]:
 
 
 def _parse_value_token(tok: str):
+    """
+    Преобразует токен значения в Python-тип: str, int или bool.
+
+    Args:
+        tok (str): токен значения
+
+    Returns:
+        Any: значение в соответствующем типе
+    """
     t = tok.strip()
     if (t.startswith('"') and t.endswith('"')) \
         or (t.startswith("'") and t.endswith("'")):

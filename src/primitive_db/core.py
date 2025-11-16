@@ -10,6 +10,20 @@ _cache = create_cacher()
 
 @handle_db_errors
 def create_table(metadata: dict, table_name: str, columns: List[tuple]) -> dict:
+    """
+    Создает новую таблицу с указанными столбцами.
+
+    Args:
+        metadata (dict): Существующие метаданные таблиц.
+        table_name (str): Имя создаваемой таблицы.
+        columns (List[tuple]): Список кортежей (имя_столбца, тип_данных).
+
+    Returns:
+        dict: Обновленные метаданные с новой таблицей.
+
+    Raises:
+        ValueError: Если таблица уже существует или указан недопустимый тип.
+    """
     if table_name in metadata:
         raise ValueError(f'Таблица "{table_name}" уже существует.')
     cols = [("ID", "int")] + columns
@@ -23,6 +37,19 @@ def create_table(metadata: dict, table_name: str, columns: List[tuple]) -> dict:
 @handle_db_errors
 @confirm_action("удаление таблицы")
 def drop_table(metadata: dict, table_name: str) -> dict:
+    """
+    Удаляет таблицу и очищает её данные.
+
+    Args:
+        metadata (dict): Метаданные таблиц.
+        table_name (str): Имя таблицы для удаления.
+
+    Returns:
+        dict: Обновленные метаданные без удаленной таблицы.
+
+    Raises:
+        KeyError: Если таблица не существует.
+    """
     if table_name not in metadata:
         raise KeyError(table_name)
     metadata.pop(table_name)
@@ -35,12 +62,36 @@ def drop_table(metadata: dict, table_name: str) -> dict:
 
 @handle_db_errors
 def list_tables(metadata: dict) -> List[str]:
+    """
+    Возвращает список всех таблиц.
+
+    Args:
+        metadata (dict): Метаданные таблиц.
+
+    Returns:
+        List[str]: Список имен таблиц.
+    """
     return list(metadata.keys())
 
 
 @handle_db_errors
 @log_time
 def insert(metadata: dict, table_name: str, values: List[Any]) -> List[dict]:
+    """
+    Добавляет запись в таблицу с проверкой типов и генерацией ID.
+
+    Args:
+        metadata (dict): Метаданные таблиц.
+        table_name (str): Имя таблицы.
+        values (List[Any]): Список значений для столбцов (кроме ID).
+
+    Returns:
+        List[dict]: Все записи таблицы после добавления.
+
+    Raises:
+        KeyError: Если таблица не существует.
+        ValueError: Если количество значений или типы неверны.
+    """
     if table_name not in metadata:
         raise KeyError(table_name)
     cols = metadata[table_name]["columns"]
@@ -68,6 +119,20 @@ def insert(metadata: dict, table_name: str, values: List[Any]) -> List[dict]:
 @handle_db_errors
 @log_time
 def select(metadata: dict, table_name: str, where_clause: dict = None) -> List[dict]:
+    """
+    Возвращает записи таблицы с фильтром по where_clause.
+
+    Args:
+        metadata (dict): Метаданные таблиц.
+        table_name (str): Имя таблицы.
+        where_clause (dict, optional): Условие фильтрации {столбец: значение}.
+
+    Returns:
+        List[dict]: Список словарей с данными.
+
+    Raises:
+        KeyError: Если таблица не существует.
+    """
     if table_name not in metadata:
         raise KeyError(table_name)
     data = load_table_data(table_name)
@@ -91,6 +156,22 @@ def select(metadata: dict, table_name: str, where_clause: dict = None) -> List[d
 @handle_db_errors
 def update(metadata: dict, table_name: str, \
     set_clause: dict, where_clause: dict) -> List[dict]:
+    """
+    Обновляет записи таблицы по условию where_clause с заданными значениями.
+
+    Args:
+        metadata (dict): Метаданные таблиц.
+        table_name (str): Имя таблицы.
+        set_clause (dict): Словарь обновляемых значений {столбец: новое_значение}.
+        where_clause (dict): Словарь условий фильтрации {столбец: значение}.
+
+    Returns:
+        List[dict]: Все записи таблицы после обновления.
+
+    Raises:
+        KeyError: Если таблица или столбец не существует.
+        ValueError: Если тип нового значения не соответствует столбцу.
+    """
     if table_name not in metadata:
         raise KeyError(table_name)
     cols = dict(metadata[table_name]["columns"])
@@ -122,6 +203,20 @@ def update(metadata: dict, table_name: str, \
 @handle_db_errors
 @confirm_action("удаление записи")
 def delete(metadata: dict, table_name: str, where_clause: dict) -> List[dict]:
+    """
+    Удаляет записи таблицы по условию where_clause.
+
+    Args:
+        metadata (dict): Метаданные таблиц.
+        table_name (str): Имя таблицы.
+        where_clause (dict): Условие удаления {столбец: значение}.
+
+    Returns:
+        List[dict]: Все записи таблицы после удаления.
+
+    Raises:
+        KeyError: Если таблица не существует.
+    """
     if table_name not in metadata:
         raise KeyError(table_name)
     data = load_table_data(table_name)
@@ -143,6 +238,19 @@ def delete(metadata: dict, table_name: str, where_clause: dict) -> List[dict]:
 
 @handle_db_errors
 def info(metadata: dict, table_name: str) -> dict:
+    """
+    Возвращает информацию о таблице: столбцы и количество записей.
+
+    Args:
+        metadata (dict): Метаданные таблиц.
+        table_name (str): Имя таблицы.
+
+    Returns:
+        dict: {"table": имя_таблицы, "columns": список_столбцов, "count": число_записей}
+
+    Raises:
+        KeyError: Если таблица не существует.
+    """
     if table_name not in metadata:
         raise KeyError(table_name)
     cols = metadata[table_name]["columns"]

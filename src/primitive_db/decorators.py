@@ -5,6 +5,17 @@ from typing import Any, Callable
 
 
 def handle_db_errors(func: Callable) -> Callable:
+    """
+    Декоратор для обработки ошибок функций работы с базой данных.
+
+    Перехватывает:
+        - FileNotFoundError: если файл данных отсутствует
+        - KeyError: если таблица или столбец не найден
+        - ValueError: ошибки валидации
+        - другие исключения: вывод сообщения об ошибке
+
+    Возвращает None при ошибке.
+    """
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
@@ -22,6 +33,17 @@ def handle_db_errors(func: Callable) -> Callable:
 
 
 def confirm_action(action_name: str):
+    """
+    Декоратор для обработки ошибок функций работы с базой данных.
+
+    Перехватывает:
+        - FileNotFoundError: если файл данных отсутствует
+        - KeyError: если таблица или столбец не найден
+        - ValueError: ошибки валидации
+        - другие исключения: вывод сообщения об ошибке
+
+    Возвращает None при ошибке.
+    """
     def deco(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -35,6 +57,12 @@ def confirm_action(action_name: str):
 
 
 def log_time(func: Callable) -> Callable:
+    """
+    Декоратор для измерения и вывода времени выполнения функции.
+
+    После выполнения функции выводит сообщение:
+        Функция <имя_функции> выполнилась за <время> секунд.
+    """
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.monotonic()
@@ -46,6 +74,17 @@ def log_time(func: Callable) -> Callable:
 
 
 def create_cacher():
+    """
+    Создает функцию-кешер для хранения результатов вычислений по ключу.
+
+    Возвращает функцию cache_result(key, value_func), которая:
+        - возвращает закешированное значение для ключа, если есть
+        - иначе вызывает value_func(), сохраняет результат в кеш и возвращает его
+
+    Пример использования:
+        cache = create_cacher()
+        result = cache("some_key", lambda: expensive_computation())
+    """
     cache = {}
 
     def cache_result(key: str, value_func: Callable[[], Any]):

@@ -17,6 +17,9 @@ from .utils import load_metadata, save_metadata
 
 
 def print_help():
+    """
+    Выводит справку по доступным командам базы данных.
+    """
     print("\n***Процесс работы с таблицей***")
     print("Функции:")
     print("create_table <имя_таблицы> <столбец1:тип> .. - создать таблицу")
@@ -32,6 +35,13 @@ def print_help():
 
 
 def pretty_print_rows(cols, rows):
+    """
+    Выводит данные таблицы в виде красивой таблицы PrettyTable.
+
+    Args:
+        cols (List[Tuple[str, str]]): Список столбцов таблицы с их типами.
+        rows (List[dict]): Список записей (словари с ключами - именами столбцов).
+    """
     table = PrettyTable()
     table.field_names = [c for c, _ in cols]
     for r in rows:
@@ -40,6 +50,12 @@ def pretty_print_rows(cols, rows):
 
 
 def run():
+    """
+    Основной цикл работы базы данных.
+
+    Обрабатывает пользовательский ввод, вызывает CRUD-функции
+    и другие команды управления таблицами.
+    """
     print("DB project is running! Введите help для подсказки.")
     while True:
         try:
@@ -78,7 +94,6 @@ def run():
                     print(f'Таблица "{table_name}" успешно создана со столбцами: ' +
                         ", ".join([f"{n}:{t}" for n, t in metadata[table_name]["columns"]]))
                 continue
-
 
             if cmd == "list_tables":
                 names = list_tables(metadata)
