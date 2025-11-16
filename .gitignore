@@ -1,0 +1,11 @@
+.venv/
+dist/
+__pycache__/
+db_meta.json
+data/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.egg-info/
+

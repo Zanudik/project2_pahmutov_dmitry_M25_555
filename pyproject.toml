@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "project2_pahmutov_dmitry_M25_555"
+version = "0.1.0"
+description = "Primitive DB project"
+authors = ["Dmitry Pahmutov <dmitryaric@mail.ru>"]
+readme = "README.md"
+
+packages = [{ include = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+prettytable = "^3.7.0"
+prompt = "^0.3.0"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.284"
+
+[tool.poetry.scripts]
+project = "src.primitive_db.main:main"
+database = "src.primitive_db.engine:run"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+exclude = ["venv", ".venv", "dist", "__pycache__"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = []
+
